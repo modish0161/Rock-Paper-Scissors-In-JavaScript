@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rock Paper Scissors Game</title>
+        <link rel="stylesheet" href="style.css">
+        <style></style>
+    </head>
+    <body>
+        <!-- Main game container -->
+        <div id="game">
+            <h1>Rock Paper Scissors</h1>
+            <!-- Container for choice buttons -->
+            <div id="choices">
+                <!-- Button for choosing Rock -->
+                <button id="rock">
+                    <i class="fas fa-hand-rock"></i>
+                    Rock
+                </button>
+                <!-- Button for choosing Paper -->
+                <button id="paper">
+                    <i class="fas fa-hand-paper"></i>
+                    Paper
+                </button>
+                <!-- Button for choosing Scissors -->
+                <button id="scissors">
+                    <i class="fas fa-hand-scissors"></i>
+                    Scissors
+                </button>
+            </div>
+            <!-- Container for displaying the game result -->
+            <div id="result">
+                <p id="user-choice"></p>
+                <!-- Display user's choice -->
+                <p id="computer-choice"></p>
+                <!-- Display computer's choice -->
+                <p id="game-result"></p>
+                <!-- Display game result -->
+            </div>
+        </div>
+        <script>
+        // Wait for the DOM to be fully loaded before attaching event listeners
+        document.addEventListener("DOMContentLoaded", () => {
+            // Select all buttons within the #choices div
+            const buttons = document.querySelectorAll("#choices button");
+            // Add a click event listener to each button
+            buttons.forEach(button => {
+                button.addEventListener("click", function() {
+                    // Get the id of the clicked button to determine the user's choice
+                    const userChoice = this.getAttribute("id");
+                    // Start the game with the user's choice
+                    playGame(userChoice);
+                });
+            });
+        });
+
+        // Function to randomly select the computer's choice
+        function getComputerChoice() {
+            const choices = ['rock', 'paper', 'scissors'];
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+
+        // Function to determine the winner of the game
+        function determineWinner(userChoice, computerChoice) {
+            // Check for a tie
+            if (userChoice === computerChoice) {
+                return "It's a tie!";
+            }
+
+            // Rules defining which choice beats which
+            const rules = {
+                rock: 'scissors',
+                paper: 'rock',
+                scissors: 'paper'
+            };
+
+            // Determine if the user wins or loses based on the rules
+            if (computerChoice === rules[userChoice]) {
+                return 'You win!';
+            } else {
+                return 'You lose!';
+            }
+        }
+
+        // Asynchronous function to handle the game logic
+        async function playGame(userChoice) {
+            // Asynchronously get the computer's choice with a simulated delay
+            async function getComputerChoiceAsync() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(getComputerChoice());
+                    }, 3000); // Simulate a 3-second thinking time for the computer
+                });
+            }
+
+            // Await the computer's choice to ensure it's received before proceeding
+            const computerChoice = await getComputerChoiceAsync();
+
+            // Determine the winner using the user's and computer's choices
+            const result = determineWinner(userChoice, computerChoice);
+
+            // Update the UI with the game's outcome
+            document.getElementById('user-choice').innerHTML = `You chose: ${userChoice}`;
+            document.getElementById('computer-choice').innerHTML = `Computer chose: ${computerChoice}`;
+            document.getElementById('game-result').innerHTML = `<strong>${result}</strong>`;
+        }
+        </script>
+    </body>
+</html>
